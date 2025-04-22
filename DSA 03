@@ -1,0 +1,165 @@
+#include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <cstring>
+using namespace std;
+struct Node 
+{
+    char label[60];
+    int chcount;
+    vector<Node*>child;
+};
+class General 
+{
+public:
+    Node* root;
+    General()
+    {
+        root=nullptr;
+    }
+    void insert();
+    void display(Node* r,int depth=0);
+    void show();
+    ~General();
+    void deleteTree(Node* r);
+};
+void General::insert()
+{
+    root=new Node();
+    cout<<"Enter the name of the book: ";
+    cin.ignore();
+    cin.getline(root->label,60);
+    cout<<"Enter the total number of chapters in the book: ";
+    cin>>root->chcount;
+    for(int i=0;i<root->chcount;i++)
+    {
+        Node* chapter=new Node();
+        cout<<"Enter the name of chapter: ";
+        cin.ignore();
+        cin.getline(chapter->label,60);
+        cout<<"Enter the number of sections in chapter: ";
+        cin>>chapter->chcount;
+        for(int j=0;j<chapter->chcount;j++)
+        {
+            Node* section=new Node();
+            cout<<"Enter the name of section: ";
+            cin.ignore();
+            cin.getline(section->label,60);
+            cout<<"Enter the number of subsections in section: ";
+            cin>>section->chcount;
+            for(int k=0;k<section->chcount;k++)
+            {
+                Node* subsection=new Node();
+                cout<<"Enter the name of subsection:";
+                cin.ignore();
+                cin.getline(subsection->label,60);
+                section->child.push_back(subsection);
+            }
+            chapter->child.push_back(section);
+        }
+        root->child.push_back(chapter); 
+    }
+}
+void General::display(Node* r,int depth) 
+{
+    if(r==nullptr)
+    return;
+    for(int i=0;i<depth;i++)
+    cout<<"  ";
+    cout<<r->label<<endl;
+    for(int i=0;i<r->child.size();i++) 
+    {
+        display(r->child[i],depth+1);
+    }
+}
+void General::show()
+{
+    if(root==nullptr) 
+    {
+        cout<<"No book data available."<<endl;
+        return;
+    }
+    cout<<"********** Hierarchy of Book **********"<<endl;
+    display(root);
+}
+void General::deleteTree(Node* r)
+{
+    if(r==nullptr) 
+    return;
+    for(int i=0;i<r->child.size();i++)
+    {
+        deleteTree(r->child[i]);
+    }
+    delete r; 
+}
+General::~General()
+{
+    deleteTree(root);
+}
+int main()
+{
+    General g;
+    int ch;
+    do 
+    {
+        cout<<"~~~~~ MENU ~~~~~"<<endl;
+        cout<<"1. Insert"<<endl;
+        cout<<"2.Display"<<endl;
+        cout<<"3. Exit"<<endl;
+        cout<<"Enter the choice: ";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:g.insert(); 
+            break;
+            case 2:g.show(); 
+            break;
+            case 3:cout<<"Exiting program."<<endl; 
+            break;
+            default:cout<<"Invalid choice."<<endl;
+            break;
+        }
+    }while(ch!=3);
+    return 0;
+}
+
+
+OUTPUT:
+~~~~~ MENU ~~~~~
+1. Insert
+2.Display
+3. Exit
+Enter the choice: 1
+Enter the name of the book: OOP
+Enter the total number of chapters in the book: 2
+Enter the name of chapter: Basic of oop
+Enter the number of sections in chapter: 1
+Enter the name of section: Introduction
+Enter the number of subsections in section: 1
+Enter the name of subsection:History
+Enter the name of chapter: 2
+Enter the number of sections in chapter: 1
+Enter the name of section: CONCEPT OF OOP
+Enter the number of subsections in section: 2
+Enter the name of subsection:Data type
+Enter the name of subsection:Constructor
+~~~~~ MENU ~~~~~
+1. Insert
+2.Display
+3. Exit
+Enter the choice: 2
+********** Hierarchy of Book **********
+OOP
+  Basic of oop
+    Introduction
+      History
+  
+    CONCEPT OF OOP
+      Data type
+       Constructor
+~~~~~ MENU ~~~~~
+1. Insert
+2.Display
+3. Exit
+Enter the choice: 3
+Exiting program.
